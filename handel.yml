@@ -1,0 +1,45 @@
+version: 1
+
+name: graduate-studies-email-spa
+
+tags:
+  team: Aim APIs
+  data-sensitivity: confidential
+
+environments:
+  dev:
+    webapp:
+      type: beanstalk
+      path_to_code: .
+      solution_stack: 64bit Amazon Linux 2018.03 v4.10.2 running Node.js
+      health_check_url: /healthcheck
+      routing:
+        type: https
+        https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
+        dns_names:
+          - graduate-emailer-dev.sim.byu.edu
+      auto_scaling:
+        min_instances: 2
+        max_instances: 3
+      instance_type: m5.large
+      environment_variables:
+        PORT: 8081
+        NODE_ENV: development
+  prd:
+    webapp:
+      type: beanstalk
+      path_to_code: .
+      solution_stack: 64bit Amazon Linux 2018.03 v4.5.4 running Node.js
+      health_check_url: /healthcheck
+      routing:
+        type: https
+        https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
+        dns_names:
+          - graduate-emailer.sim.byu.edu
+      auto_scaling:
+        min_instances: 2
+        max_instances: 3
+      instance_type: t2.small
+      environment_variables:
+        PORT: 8081
+        NODE_ENV: production

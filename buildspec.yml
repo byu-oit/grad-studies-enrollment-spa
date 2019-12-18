@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Installing npm dependencies
+      - npm install
+      - npm run build
+  install:
+    runtime-versions:
+      nodejs: 10
+  build:
+    commands:
+      - echo Running unit tests for components
+artifacts:
+  files:
+    - ./**/*

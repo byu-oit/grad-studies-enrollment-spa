@@ -1,0 +1,102 @@
+.tabular {
+    display: flex;
+}
+
+.tabular-wrap {
+    flex-wrap: wrap;
+}
+
+.tabular-row {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-grow: 0;
+    -webkit-flex-grow: 0;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    /*width: 100%;*/
+}
+
+.fixed-cell {
+    flex-grow: 0;
+}
+
+.column-direction {
+    flex-direction: column;
+}
+
+.vertical-middle {
+    align-items: center;
+}
+
+.SIM-app th {
+    background-color: #5D7998;
+    color: white;
+    padding: 10px;
+    line-height: 20px
+}
+
+.SIM-app td {
+    padding: 5px 10px;
+    line-height: 20px
+}
+
+.table-header {
+    color: #fff;
+    background-color: #002e5d;
+}
+
+.table-cell {
+    padding: 5px;
+}
+
+.table-cell-tall {
+    padding: 10px 5px;
+}
+
+.table-cell-wide {
+    padding: 5px 10px;
+}
+
+.table-cell-tall-wide {
+    padding: 10px 10px;
+}
+
+.cell-center {
+    align-self: center;
+}
+
+.table-row {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-grow: 0;
+    -webkit-flex-grow: 0;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    /*width: 100%;*/
+    border-bottom: 1px solid #e0e0e0;
+    border-collapse: collapse;
+}
+
+.table-row-even-odd {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-grow: 0;
+    -webkit-flex-grow: 0;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    /*width: 100%;*/
+}
+
+.table-row-even-odd:nth-child(odd) {
+    background-color: #fafafa;
+}
+
+.table-row-even-odd:nth-child(even) {
+    background-color: #eaeaea;
+}

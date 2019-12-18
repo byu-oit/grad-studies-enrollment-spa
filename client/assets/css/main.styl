@@ -1,0 +1,70 @@
+@import 'buttons.css';
+@import 'tabular.css';
+//@import './bootstrap.css';
+
+html, body, #__nuxt, #__layout {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#__layout > * {
+  height: 100%;
+  box-sizing: border-box;
+  background: #fafafa;
+
+  byu-header {
+    z-index: 1;
+  }
+
+  byu-search {
+    margin-left: 20px;
+    position: relative;
+
+    button {
+      padding: 1px 6px;
+    }
+
+    input {
+      background: #FFFFFF;
+      top: -1px;
+    }
+  }
+
+  byu-header[mobile-view] byu-search {
+    margin: 0;
+
+    input {
+      height: 35px !important;
+      border-bottom: 1px solid #c5c5c5;
+    }
+  }
+
+  #page-content {
+    width: 100%;
+    margin: 0 auto;
+    //max-width: 1200px;
+    flex-grow: 1;
+    background: #FFFFFF;
+
+    > * {
+      margin: 16px;
+    }
+    font: 14pt Arial, Helvetica, sans-serif;
+  }
+
+  .application--wrap {
+
+    button {
+      font-weight: bold;
+    }
+
+    .warning {
+      color: #333333;
+    }
+  }
+
+  .application.theme--light {
+    background-color: #FFFFFF;
+  }
+}
