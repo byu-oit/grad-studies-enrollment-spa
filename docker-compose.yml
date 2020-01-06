@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     build:
-      context: ../graduate-studies-email-spa
+      context: ./
     volumes:
       - ~/.aws:/root/.aws
       - ./client:/root/client

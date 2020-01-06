@@ -1,6 +1,6 @@
 version: 1
 
-#name: graduate-studies-email-spa
+#name: grad-studies-enrollment-spa
 name: gs-email-spa
 
 pipelines:
@@ -9,7 +9,7 @@ pipelines:
     - type: github
       name: GitHub
       owner: byu-oit
-      repo: graduate-studies-email-spa
+      repo: grad-studies-enrollment-spa
       branch: master
     - type: codebuild
       name: CodeBuild
@@ -27,7 +27,7 @@ pipelines:
     - type: github
       name: GitHub
       owner: byu-oit
-      repo: graduate-studies-email-spa
+      repo: grad-studies-enrollment-spa
       branch: release
     - type: codebuild
       name: CodeBuild

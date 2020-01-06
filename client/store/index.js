@@ -20,14 +20,19 @@ import Dater from '../mixins/Date'
 
 // export state as a function
 export const state = () => ({
-    currentStudentList: null,
-    ETDStudentList: null,
-    newlyAdmittedStudentList: null,
+    enrollmentData: null,
     loading: false,
     rowSelected: {},
     hasMessage: false,
     reloadKey: 0
 });
+
+// export getters object
+export const getters = {
+    getEnrollmentData: state => {
+        return state.enrollmentData
+    }
+}
 
 // export mutations object
 export const mutations = {
@@ -54,6 +59,9 @@ export const mutations = {
     },
     setReloadKey(state) {
         state.reloadKey = state.reloadKey + 1
+    },
+    setEnrollmentData(state, obj) {
+        state.enrollmentData = obj;
     }
 };
 
@@ -104,6 +112,38 @@ export const actions = {
                             context.commit('setNewlyAdmittedStudentList', info.content)
                             break;
                     }
+                    resolve(true)
+                }
+            })
+        })
+    },
+
+    fetchEnrollmentByYear(context, year) {
+        context.commit('setLoading', true)
+        const request = {
+            method: "GET",
+            url: `https://api.byu.edu/graduateStudiesYAPI/v1.0/student/enrollments/year/${year}`
+        }
+        return new Promise((resolve, reject) => {
+            if (!this.app.$byu.user) {
+                context.commit('setLoading', false)
+            }
+            this.app.$byu.auth.request(request, (body, status) => {
+                context.commit('setLoading', false)
+                if (status >= 400) {
+                    if (status === 401) {
+                        if (process.client) {
+                            window.location.reload()
+                        }
+                    }
+                    context.commit('setHasMessage', 'An error occured getting student list.')
+                    console.error(`${status} - ${body}`)
+                    resolve(false)
+                }
+                else {
+                    let obj = JSON.parse(body)
+                    context.commit('setEnrollmentData', obj)
+                    console.log("Data:", obj)
                     resolve(true)
                 }
             })

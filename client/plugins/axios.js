@@ -15,7 +15,7 @@
  *    limitations under the License.
  **/
 'use strict';
-import * as axios from 'client/plugins/axios';
+import * as axios from 'axios';
 
 let options = {};
 

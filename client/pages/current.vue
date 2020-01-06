@@ -32,7 +32,7 @@
 </template>
 
 <script>
-    import SimTable from '../components/sim-table/index'
+    import SimTable from '../components/sim-table'
     import Message from '../components/message'
     import accounting from '../accounting.min'
     import LocalFileSystem from '../mixins/LocalFileSystem'

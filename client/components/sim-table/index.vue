@@ -407,7 +407,7 @@
   import BaseTooltip from "./components/base-tooltip.vue";
   import BaseIcon from "./components/base-icon.vue";
   import "vue-resize/dist/vue-resize.css";
-  import { _uuid, exportCsv, deepCopy } from "./utils";
+  import { _uuid, exportCsv, deepCopy } from "./utils/index.js";
 
   export default {
     name: "SimTable",
