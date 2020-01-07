@@ -20,8 +20,8 @@
                 'getEnrollmentData',
             ])
         },
-        mounted() {
-            this.fetchEnrollmentByYear('2011')
+        async mounted() {
+            await this.fetchEnrollmentByYear('2011')
             this.enrollmentData = this.getEnrollmentData
             console.log("Data", this.enrollmentData)
         },

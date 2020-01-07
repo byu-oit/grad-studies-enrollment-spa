@@ -100,8 +100,7 @@ export const actions = {
                     resolve(false)
                 }
                 else {
-                    let obj = JSON.parse(body)
-                    context.commit('setEnrollmentData', obj.content)
+                    context.commit('setEnrollmentData', JSON.parse(body).content)
                     resolve(true)
                 }
             })
