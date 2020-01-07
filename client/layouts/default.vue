@@ -39,7 +39,7 @@
           <nuxt />
         </div>
 
-        <byu-footer class="absolute" id="byu-footer"></byu-footer>
+        <byu-footer class="fixed" id="byu-footer"></byu-footer>
     </div>
 </template>
 
