@@ -76,47 +76,6 @@ export const actions = {
         commit('wabs/authUpdate', wabs.auth);
         commit('wabs/userUpdate', wabs.user);
     },
-    fetchStudentList(context, whichList) {
-        context.commit('setLoading', true)
-        const request = {
-            method: "GET",
-            url: `https://api.byu.edu/graduateStudiesYAPI/v1.0/email/${whichList}`
-        }
-        return new Promise((resolve, reject) => {
-            if (!this.app.$byu.user) {
-                context.commit('setLoading', false)
-            }
-            this.app.$byu.auth.request(request, (body, status) => {
-                context.commit('setLoading', false)
-                if (status >= 400) {
-                    if (status === 401) {
-                        if (process.client) {
-                            window.location.reload()
-                        }
-                    }
-                    context.commit('setHasMessage', 'An error occured getting student list.')
-                    console.error(`${status} - ${body}`)
-                    resolve(false)
-                }
-                else {
-                    let info = JSON.parse(body)
-                    switch (whichList.toUpperCase())
-                    {
-                        case 'ETD':
-                            context.commit('setETDStudentList', info.content)
-                            break;
-                        case 'CURRENT':
-                            context.commit('setCurrentStudentList', info.content)
-                            break;
-                        case 'NEWLYADMITTED':
-                            context.commit('setNewlyAdmittedStudentList', info.content)
-                            break;
-                    }
-                    resolve(true)
-                }
-            })
-        })
-    },
 
     fetchEnrollmentByYear(context, year) {
         context.commit('setLoading', true)
@@ -142,8 +101,7 @@ export const actions = {
                 }
                 else {
                     let obj = JSON.parse(body)
-                    context.commit('setEnrollmentData', obj)
-                    console.log("Data:", obj)
+                    context.commit('setEnrollmentData', obj.content)
                     resolve(true)
                 }
             })

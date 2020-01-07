@@ -28,7 +28,7 @@
     "@nuxtjs/font-awesome": "^1.0.4",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
-    "byu-wabs": "^6.0.0",
+    "byu-wabs": "^6.0.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "fecha": "^3.0.3",

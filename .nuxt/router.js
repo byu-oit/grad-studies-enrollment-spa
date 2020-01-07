@@ -3,9 +3,6 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const _4fa4e9d6 = () => import('../client/pages/current.vue' /* webpackChunkName: "pages/current" */).then(m => m.default || m)
-const _52e99b1c = () => import('../client/pages/etd.vue' /* webpackChunkName: "pages/etd" */).then(m => m.default || m)
-const _ddaa5af0 = () => import('../client/pages/newlyAdmitted.vue' /* webpackChunkName: "pages/newlyAdmitted" */).then(m => m.default || m)
 const _41f56eaa = () => import('../client/pages/webResourceSearch/index.vue' /* webpackChunkName: "pages/webResourceSearch/index" */).then(m => m.default || m)
 const _bfac6422 = () => import('../client/pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
 
@@ -67,21 +64,6 @@ export function createRouter () {
     linkExactActiveClass: 'nuxt-link-exact-active',
     scrollBehavior,
     routes: [
-		{
-			path: "/current",
-			component: _4fa4e9d6,
-			name: "current"
-		},
-		{
-			path: "/etd",
-			component: _52e99b1c,
-			name: "etd"
-		},
-		{
-			path: "/newlyAdmitted",
-			component: _ddaa5af0,
-			name: "newlyAdmitted"
-		},
 		{
 			path: "/webResourceSearch",
 			component: _41f56eaa,

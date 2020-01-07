@@ -7,11 +7,12 @@
 </template>
 
 <script>
-    import {mapGetters, mapActions, mapMutations} from 'vuex'
+    import {mapGetters, mapActions} from 'vuex'
 
     export default {
         data: function () {
             return {
+                enrollmentData: null,
             }
         },
         computed: {
@@ -20,16 +21,14 @@
             ])
         },
         mounted() {
-            this.func()
+            this.fetchEnrollmentByYear('2011')
+            this.enrollmentData = this.getEnrollmentData
+            console.log("Data", this.enrollmentData)
         },
         methods: {
             ...mapActions ([
                 'fetchEnrollmentByYear',
             ]),
-
-            func() {
-                this.fetchEnrollmentByYear('2011')
-            }
         }
     }
 </script>

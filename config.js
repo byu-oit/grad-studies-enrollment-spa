@@ -37,13 +37,10 @@ const config = {
         // default site navigation links
         navigationLinks: [
             { href: '/', title: 'About' },
-            { href: '/current', title: 'Current Graduate Students' },
-            { href: '/etd', title: 'Require ETD' },
-            { href: '/newlyAdmitted', title: 'Admitted This Semester/Term' }
         ],
 
         // default site title (in title bar)
-        pageTitle: { pre: '', main: 'Graduate Studies Emailer', post: '' },
+        pageTitle: { pre: '', main: 'Graduate Studies Enrollment', post: '' },
 
         // how many milliseconds to wait before performing an automatic search - set to zero (0) to disable
         searchDebounce: 350,
@@ -52,7 +49,7 @@ const config = {
         searchHandler: WebResource,
 
         // default browser page title (modification requires rebuild)
-        title: 'BYU | Graduate Studies Emailer'
+        title: 'BYU | Graduate Studies Enrollment'
     },
 
     // the WABS configuration: https://www.npmjs.com/package/byu-wabs#create-a-wabs-configuration
