@@ -650,20 +650,19 @@
 
     },
     watch: {
-      dataChanged(newVal, oldVal) {
+      data: function(newVal, oldVal) {
         this.update()
-
       },
-      config() {
+      config: function() {
         this.update();
       },
-      multiHeader() {
+      multiHeader: function() {
         this.update();
       },
-      defaultSelect() {
+      defaultSelect: function() {
         this.update();
       },
-      height() {
+      height: function() {
         this.setSize();
       }
     },

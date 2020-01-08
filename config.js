@@ -36,7 +36,7 @@ const config = {
 
         // default site navigation links
         navigationLinks: [
-            { href: '/', title: 'About' },
+            // { href: '/', title: 'About' },
         ],
 
         // default site title (in title bar)
