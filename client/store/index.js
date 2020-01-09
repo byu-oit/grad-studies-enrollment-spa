@@ -77,18 +77,48 @@ export const actions = {
         commit('wabs/userUpdate', wabs.user);
     },
 
+    // fetchEnrollmentByYear(context, year) {
+    //     context.commit('setLoading', true)
+    //     const request = {
+    //         method: "GET",
+    //         url: `https://api.byu.edu/graduateStudiesYAPI/v1.0/student/enrollments/year/${year}`
+    //     }
+    //     return new Promise((resolve, reject) => {
+    //         if (!this.app.$byu.user) {
+    //             context.commit('setLoading', false)
+    //         }
+    //         this.app.$byu.auth.request(request, (body, status) => {
+    //             context.commit('setLoading', false)
+    //             if (status >= 400) {
+    //                 if (status === 401) {
+    //                     if (process.client) {
+    //                         window.location.reload()
+    //                     }
+    //                 }
+    //                 context.commit('setHasMessage', 'An error occured getting student list.')
+    //                 console.error(`${status} - ${body}`)
+    //                 resolve(false)
+    //             }
+    //             else {
+    //                 context.commit('setEnrollmentData', JSON.parse(body).content)
+    //                 resolve(true)
+    //             }
+    //         })
+    //     })
+    // },
+
+    //Simplified version
     fetchEnrollmentByYear(context, year) {
         context.commit('setLoading', true)
-        const request = {
+        const options = {
             method: "GET",
             url: `https://api.byu.edu/graduateStudiesYAPI/v1.0/student/enrollments/year/${year}`
         }
-        return new Promise((resolve, reject) => {
-            if (!this.app.$byu.user) {
-                context.commit('setLoading', false)
-            }
-            this.app.$byu.auth.request(request, (body, status) => {
-                context.commit('setLoading', false)
+        if (!this.app.$byu.user) {
+            context.commit('setLoading', false)
+        }
+        return this.app.$byu.auth.request(options)
+            .then(result => {
                 if (status >= 400) {
                     if (status === 401) {
                         if (process.client) {
@@ -96,14 +126,13 @@ export const actions = {
                         }
                     }
                     context.commit('setHasMessage', 'An error occured getting student list.')
-                    console.error(`${status} - ${body}`)
-                    resolve(false)
+                    console.error(`${status} - ${result}`)
                 }
                 else {
-                    context.commit('setEnrollmentData', JSON.parse(body).content)
-                    resolve(true)
+                    let data = JSON.parse(result.body)
+                    context.commit('setEnrollmentData', data.content)
+                    console.log("during")
                 }
             })
-        })
     }
 };

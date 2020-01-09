@@ -180,16 +180,26 @@ export default function({ app, store, req, res, redirect }) {
                                       axOptions.headers.authorization = 'Bearer ' + wabs.auth.accessToken;
                                         axios(axOptions)
                                             .then(results => {
-                                                if (callback) callback(results.data, results.status)
+                                                if (!callback) {
+                                                    return new Promise((resolve, reject) => { resolve(results) })
+                                                }
+                                                callback(results.data, results.status)
                                             })
                                             .catch(err => console.error(err.stack));
                                     }
                                 })
-                            } else if (callback) {
-                                callback(results.data, results.status);
+                            } else if (!callback) {
+                                return new Promise((resolve, reject) => { resolve(results) })
                             }
+                            callback(results.data, results.status);
                         })
-                        .catch(err => console.error(err.stack));
+                        .catch(err => {
+                            console.error(err.stack)
+                            if (!callback) {
+                                return new Promise((resolve, reject) => { reject("Failed to make request.") })
+                            }
+                            callback(null, 500)
+                        });
                 };
 
                 byu.auth.sync = function(options, callback) {

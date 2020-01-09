@@ -113,7 +113,6 @@
                 return sum
             },
             async getTableDataByYear() {
-                console.log("Reached")
                 let newArray = []
                 for (let i = Number(this.maxYearSelected); i >= Number(this.minYearSelected); i--) {
                     let yearObj = {
@@ -121,10 +120,18 @@
                         numberEnrolled: null,
                     }
                     yearObj.year = i
-                    await this.fetchEnrollmentByYear(String(i))
-                    yearObj.numberEnrolled = this.sumNumberEnrolled(this.getEnrollmentData[String(i)]) //Sum number for year
-                    newArray.push(yearObj)
-                    this.tableData = newArray
+                    try {
+                        console.log("before")
+                        await this.fetchEnrollmentByYear(String(i))
+                        console.log("after")
+
+                        yearObj.numberEnrolled = this.sumNumberEnrolled(this.getEnrollmentData[String(i)]) //Sum number for year
+                        newArray.push(yearObj)
+                        this.tableData = newArray
+                    } catch(e) {
+                        console.error("ERROR:", e)
+                        break
+                    }
                 }
             },
             loadData() {
