@@ -2,13 +2,15 @@
     <section>
         <div style="text-align: center;">
             <div v-if="yearSelectHTML" style="display: inline-block;">
+                <div style="font-size: 32px;">Years</div>
                 <div style="display: flex;">
-                    <div style="margin-right: 30px;">
-                        <label for="minYear">Min Year<br></label>
+                    <div style="margin-right: 10px;">
+                        <label for="minYear"/>
                         <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadData()" id="minYear"/>
                     </div>
-                    <div style="margin-left: 30px;">
-                        <label for="maxYear">Max Year<br></label>
+                    &ndash;
+                    <div style="margin-left: 10px;">
+                        <label for="maxYear"/>
                         <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadData()" id="maxYear"/>
                     </div>
                 </div>
@@ -17,9 +19,11 @@
                 <p>Loading . . .</p>
             </div>
         </div>
+        <div style="float: left; margin: -25px 0 0 8%;">
+            <button @click="toggle" style="font-size: 20px;">{{sortButtonText}}</button>
+        </div>
         <br>
-
-        <div style="box-shadow: 1px 1px 3px 1px #b7b7b7;">
+        <div v-if="tableData" style="box-shadow: 1px 1px 3px 1px #b7b7b7;">
             <sim-table
                        :config="tableConfig"
                        :data="tableData"
@@ -32,7 +36,7 @@
                        :hoverHighlight="tableAttribute.hoverHighlight"
                        :language="tableAttribute.language"
                        :sortParam="tableAttribute.sortParam"
-                       font-size="14px"
+                       font-size="18px"
             >
             </sim-table>
         </div>
@@ -46,36 +50,20 @@
     export default {
         data: function () {
             return {
+                enrollmentData: {},
                 tableData: [],
                 currentYear: String(new Date().getFullYear()),
-                absoluteMinYear: "1950",
                 minYearSelected: String(new Date().getFullYear()),
                 maxYearSelected: String(new Date().getFullYear()),
                 yearSelectHTML: "",
 
-                tableConfig: [
-                    {
-                        prop: "year",
-                        name: "Year",
-                        searchable: true,
-                        sortable: true,
-                        width: 20
-                    },
-                    {
-                        prop: "numberEnrolled",
-                        name: "Number Enrolled",
-                        searchable: true,
-                        sortable: true,
-                        isHidden: false,
-                        alignItems: 'center',
-                        width: 100
-                    },
-                ],
-
+                //Table Configuration
+                sortButtonText: "",
+                tableConfig: [],
                 tableAttribute: {
-                    height: 450,
+                    height: 440,
                     itemHeight: 30,
-                    minWidth: 1000,
+                    minWidth: 40,
                     selectable: true,
                     enableExport: false,
                     bordered: true,
@@ -88,12 +76,14 @@
         computed: {
             ...mapGetters ([
                 'getEnrollmentData',
+                'getAbsoluteMinYear',
             ])
         },
         components: {
             simTable,
         },
         mounted() {
+            this.getYearOptions()
             this.loadData()
         },
         methods: {
@@ -101,7 +91,8 @@
                 'fetchEnrollmentByYear',
             ]),
             getYearOptions() {
-                for (let i = Number(this.currentYear); i > Number(this.absoluteMinYear); i--) {
+                const absoluteMinYear = this.getAbsoluteMinYear
+                for (let i = Number(this.currentYear); i >= Number(absoluteMinYear); i--) {
                     this.yearSelectHTML += `<option value="${i}">${i}</option>`
                 }
             },
@@ -112,6 +103,18 @@
                 })
                 return sum
             },
+            async loadAllEnrollmentData() {
+                const absoluteMinYear = this.getAbsoluteMinYear
+                for (let i = Number(this.currentYear); i >= Number(absoluteMinYear); i--) {
+                    try {
+                        await this.fetchEnrollmentByYear(String(i))
+                        this.enrollmentData[String(i)] = this.getEnrollmentData[String(i)]
+                    } catch(e) {
+                        console.error("ERROR:", e)
+                        break
+                    }
+                }
+            },
             async getTableDataByYear() {
                 let newArray = []
                 for (let i = Number(this.maxYearSelected); i >= Number(this.minYearSelected); i--) {
@@ -119,12 +122,9 @@
                         year: null,
                         numberEnrolled: null,
                     }
-                    yearObj.year = i
                     try {
-                        console.log("before")
                         await this.fetchEnrollmentByYear(String(i))
-                        console.log("after")
-
+                        yearObj.year = i
                         yearObj.numberEnrolled = this.sumNumberEnrolled(this.getEnrollmentData[String(i)]) //Sum number for year
                         newArray.push(yearObj)
                         this.tableData = newArray
@@ -134,9 +134,95 @@
                     }
                 }
             },
+            async getTableDataByCollege() {
+                this.tableData = []
+                for (let i = Number(this.maxYearSelected); i >= Number(this.minYearSelected); i--) {
+                    try {
+                        await this.fetchEnrollmentByYear(String(i))
+                        let yearArray = this.getEnrollmentData[String(i)]
+                        let tempArray = []
+                        yearArray.forEach((obj) => {
+                            let collegeObj = {
+                                year: i,
+                                numberEnrolled: null,
+                                name: null,
+                            }
+                            collegeObj.name = obj.LEVEL_2_NAME
+                            collegeObj.numberEnrolled = obj.NUMBER_ENROLLED
+
+                            tempArray.push(collegeObj)
+                        })
+                        this.tableData = this.tableData.concat(tempArray)
+                    } catch(e) {
+                        console.error("ERROR:", e)
+                        break
+                    }
+                }
+            },
             loadData() {
-                this.getYearOptions()
-                this.getTableDataByYear()
+                this.loadAllEnrollmentData()
+                this.configureTable()
+                if (this.sortByCollege) {
+                    this.getTableDataByCollege()
+                }
+                else {
+                    this.getTableDataByYear()
+                }
+            },
+            toggle() {
+                this.sortByCollege = !this.sortByCollege
+                this.loadData()
+            },
+            findPropertyValue(objectArray, property, value) {
+                for (let i = 0; i < objectArray.length; i++) {
+                    if (objectArray[i][property] === value) {
+                        return i
+                    }
+                }
+                return false
+            },
+            configureTable() {
+                if (this.sortByCollege) {
+                    this.sortButtonText = "Sort by Year"
+                    this.tableConfig = [
+                        {
+                            prop: "name",
+                            name: "College",
+                            searchable: true,
+                            sortable: true,
+                            width: 20
+                        },
+                        {
+                            prop: "numberEnrolled",
+                            name: `Total Enrolled in ${this.minYearSelected} through ${this.maxYearSelected}`,
+                            searchable: true,
+                            sortable: true,
+                            isHidden: false,
+                            alignItems: 'center',
+                            width: 10
+                        },
+                    ]
+                } else {
+                    this.sortButtonText = "Sort by College"
+                    this.tableConfig = [
+                        {
+                            prop: "year",
+                            name: "Year",
+                            searchable: true,
+                            sortable: true,
+                            width: 20
+                        },
+                        {
+                            prop: "numberEnrolled",
+                            name: "Total Enrolled at BYU",
+                            searchable: true,
+                            sortable: true,
+                            isHidden: false,
+                            alignItems: 'center',
+                            width: 10
+                        },
+                    ]
+                }
             }
         }
     }

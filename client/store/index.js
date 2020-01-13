@@ -24,13 +24,17 @@ export const state = () => ({
     loading: false,
     rowSelected: {},
     hasMessage: false,
-    reloadKey: 0
+    reloadKey: 0,
+    absoluteMinYear: "2004",
 });
 
 // export getters object
 export const getters = {
     getEnrollmentData: state => {
         return state.enrollmentData
+    },
+    getAbsoluteMinYear: state => {
+        return state.absoluteMinYear
     }
 }
 
@@ -131,8 +135,7 @@ export const actions = {
                 else {
                     let data = JSON.parse(result.body)
                     context.commit('setEnrollmentData', data.content)
-                    console.log("during")
                 }
             })
-    }
+    },
 };

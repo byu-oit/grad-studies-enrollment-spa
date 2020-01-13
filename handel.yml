@@ -17,7 +17,7 @@ environments:
         type: https
         https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
         dns_names:
-          - graduate-emailer-dev.sim.byu.edu
+          - graduate-enrollment-dev.sim.byu.edu
       auto_scaling:
         min_instances: 2
         max_instances: 3
@@ -35,7 +35,7 @@ environments:
         type: https
         https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
         dns_names:
-          - graduate-emailer.sim.byu.edu
+          - graduate-enrollment.sim.byu.edu
       auto_scaling:
         min_instances: 2
         max_instances: 3

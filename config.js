@@ -36,7 +36,10 @@ const config = {
 
         // default site navigation links
         navigationLinks: [
-            // { href: '/', title: 'About' },
+            { href: '/', title: 'By Year' },
+            { href: '/college', title: 'By College' },
+            { href: '/department', title: 'By Department' },
+            { href: '/program', title: 'By Program' }
         ],
 
         // default site title (in title bar)
