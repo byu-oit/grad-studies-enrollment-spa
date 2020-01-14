@@ -35,6 +35,9 @@ export const getters = {
     },
     getAbsoluteMinYear: state => {
         return state.absoluteMinYear
+    },
+    getLoading: state => {
+        return state.loading
     }
 }
 
@@ -135,6 +138,7 @@ export const actions = {
                 else {
                     let data = JSON.parse(result.body)
                     context.commit('setEnrollmentData', data.content)
+                    context.commit('setLoading', false)
                 }
             })
     },
