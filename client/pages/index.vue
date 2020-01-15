@@ -1,35 +1,34 @@
 <template>
     <section>
+        <img v-if="loading" src="../assets/images/loading.gif" height="64" alt="Loading..." class="center" style="z-index: 10;">
         <div style="text-align: center;">
-            <div v-if="yearSelectHTML" style="display: inline-block;">
-                <div style="font-size: 32px;">Years</div>
-                <div style="display: flex;">
-                    <div style="margin-right: 10px;">
-                        <label for="minYear"/>
-                        <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear"/>
-                    </div>
-                    &ndash;
-                    <div style="margin-left: 10px;">
-                        <label for="maxYear"/>
-                        <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear"/>
+            <div style="margin: 0 25% 0 25%;">
+                <div style="float: left;">
+                    Sort by<br>
+                    <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
+                        <option value="college">College</option>
+                        <option value="year">Year</option>
+                        <option value="program">Program</option>
+                    </select>
+                </div>
+                <div style="float: right;">
+                    Years
+                    <div style="display: flex; margin-top: 5px;">
+                        <div style="margin-right: 10px;">
+                            <label for="minYear"/>
+                            <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" style="font-size: 14px;"/>
+                        </div>
+                        &ndash;
+                        <div style="margin-left: 10px;">
+                            <label for="maxYear"/>
+                            <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" style="font-size: 14px;"/>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div v-else style="text-align: left; font-size: 26px;">
-                <p>Loading . . .</p>
-            </div>
-        </div>
-        <div style="display: flex; margin: -20px 0 20px 20px; font-size: 16px;">
-            Sort by: &nbsp
-            <select v-model="sortVal" @change="loadTable" id="sortVal">
-                <option value="college">College</option>
-                <option value="year">Year</option>
-                <option value="department">Department</option>
-                <option value="program">Program</option>
-            </select>
         </div>
         <br>
-        <div v-if="tableData" style="box-shadow: 1px 1px 3px 1px #b7b7b7;">
+        <div style="box-shadow: 1px 1px 3px 1px #b7b7b7; margin-top: 60px;">
             <sim-table
                        :config="tableConfig"
                        :data="tableData"
@@ -58,6 +57,7 @@
             return {
                 enrollmentData: null,
                 tableData: [],
+                loading: false,
                 currentYear: String(new Date().getFullYear()),
                 minYearSelected: String(new Date().getFullYear()),
                 maxYearSelected: String(new Date().getFullYear()),
@@ -123,6 +123,12 @@
                 }
                 await this.fetchEnrollmentByYear(params)
                 this.enrollmentData = this.deepCopy(this.getEnrollmentData)
+                const keys = Object.keys(this.enrollmentData)
+                keys.forEach((key) => {
+                    this.enrollmentData[key].forEach((obj) => {
+                        obj.YEAR = key
+                    })
+                })
             },
             sortByYear() {
                 console.log("sortByYear")
@@ -131,7 +137,7 @@
                     this.enrollmentData[String(i)].forEach((obj) => {
                         let foundMatch = false
                         this.tableData.forEach((tableObj) => {
-                            if (tableObj.LEVEL_2_NAME === obj.LEVEL_2_NAME) {
+                            if (tableObj.YEAR === obj.YEAR) {
                                 tableObj.NUMBER_ENROLLED = String(Number(tableObj.NUMBER_ENROLLED) + Number(obj.NUMBER_ENROLLED))
                                 foundMatch = true
                             }
@@ -141,7 +147,7 @@
                         }
                     })
                 }
-                this.tableData.sort((a,b) => {return a.LEVEL_2_NAME > b.LEVEL_2_NAME ? 1 : -1})
+                this.tableData.sort((a,b) => {return a.YEAR > b.YEAR ? -1 : 1})
             },
             sortByCollege() {
                 console.log("sortByCollege")
@@ -164,15 +170,35 @@
             },
             sortByProgram() {
                 console.log("sortByProgram")
+                this.tableData = []
+                for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
+                    this.enrollmentData[String(i)].forEach((obj) => {
+                        let foundMatch = false
+                        this.tableData.forEach((tableObj) => {
+                            if (tableObj.MAJOR_DESC === obj.MAJOR_DESC) {
+                                tableObj.NUMBER_ENROLLED = String(Number(tableObj.NUMBER_ENROLLED) + Number(obj.NUMBER_ENROLLED))
+                                foundMatch = true
+                            }
+                        })
+                        if (!foundMatch) {
+                            this.tableData.push(this.deepCopy(obj))
+                        }
+                    })
+                }
+                this.tableData.sort((a,b) => {return a.MAJOR_DESC > b.MAJOR_DESC ? 1 : -1})
             },
             sortByDepartment() {
                 console.log("sortByDepartment")
             },
             async loadTable() {
+                if (this.minYearSelected > this.maxYearSelected) {
+                    return
+                }
                 while (!this.enrollmentData) {
-                    console.log("Still loading...")
+                    this.loading = true
                     await this.sleep(5000)
                 }
+                this.loading = false
 
                 this.configureTable()
                 switch (this.sortVal) {
@@ -226,7 +252,7 @@
                 } else if (this.sortVal === "year"){
                     this.tableConfig = [
                         {
-                            prop: "year",
+                            prop: "YEAR",
                             name: "Year",
                             searchable: true,
                             sortable: true,
@@ -245,15 +271,15 @@
                 } else if (this.sortVal === "program") {
                     this.tableConfig = [
                         {
-                            prop: "year",
-                            name: "Year",
+                            prop: "MAJOR_DESC",
+                            name: "Program",
                             searchable: true,
                             sortable: true,
                             width: 20
                         },
                         {
                             prop: "NUMBER_ENROLLED",
-                            name: "Total Enrolled at BYU",
+                            name: `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`,
                             searchable: true,
                             sortable: true,
                             isHidden: false,
@@ -264,8 +290,8 @@
                 } else if (this.sortVal === "department") {
                     this.tableConfig = [
                         {
-                            prop: "year",
-                            name: "Year",
+                            prop: "MAJOR_DESC",
+                            name: "Program",
                             searchable: true,
                             sortable: true,
                             width: 20
