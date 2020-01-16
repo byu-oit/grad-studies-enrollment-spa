@@ -1,10 +1,13 @@
 <template>
     <section>
-        <img v-if="loading" src="../assets/images/loading.gif" height="32" alt="Loading..." class="center" style="z-index: 10;">
+        <div v-if="loading" style="z-index: 10; position: absolute; padding: 15px; background-color: #ededed; border-radius: 15px; display: flex;">
+            <div style="margin: 5px 10px 0 0;">Loading years...</div>
+            <img src="../assets/images/loading.gif" height="32" alt="Loading...">
+        </div>
         <div style="text-align: center;">
             <div style="margin: 0 25% 0 25%;">
                 <div style="float: left;">
-                    Sort by<br>
+                    Sort<br>
                     <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
                         <option value="college">College</option>
                         <option value="year">Year</option>
@@ -145,14 +148,26 @@
                     })
                 })
             },
-            sortByYear() {
-                console.log("sortByYear")
+            sortTable() {
+                let sortProp = null
+                switch(this.sortVal) {
+                    case 'year':
+                        sortProp = 'YEAR'
+                        break
+                    case 'college':
+                        sortProp = 'LEVEL_2_NAME'
+                        break
+                    case 'program':
+                        sortProp = "MAJOR_DESC"
+                        break
+                }
+
                 this.tableData = []
                 for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
                     this.enrollmentData[String(i)].forEach((obj) => {
                         let foundMatch = false
                         this.tableData.forEach((tableObj) => {
-                            if (tableObj.YEAR === obj.YEAR) {
+                            if (tableObj[sortProp] === obj[sortProp]) {
                                 tableObj.NUMBER_ENROLLED = String(Number(tableObj.NUMBER_ENROLLED) + Number(obj.NUMBER_ENROLLED))
                                 foundMatch = true
                             }
@@ -162,48 +177,11 @@
                         }
                     })
                 }
-                this.tableData.sort((a,b) => {return a.YEAR > b.YEAR ? -1 : 1})
-            },
-            sortByCollege() {
-                console.log("sortByCollege")
-                this.tableData = []
-                for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
-                    this.enrollmentData[String(i)].forEach((obj) => {
-                        let foundMatch = false
-                        this.tableData.forEach((tableObj) => {
-                            if (tableObj.LEVEL_2_NAME === obj.LEVEL_2_NAME) {
-                                tableObj.NUMBER_ENROLLED = String(Number(tableObj.NUMBER_ENROLLED) + Number(obj.NUMBER_ENROLLED))
-                                foundMatch = true
-                            }
-                        })
-                        if (!foundMatch) {
-                            this.tableData.push(this.deepCopy(obj))
-                        }
-                    })
+                if (sortProp === 'YEAR') {
+                    this.tableData.sort((a,b) => { return a[sortProp] > b[sortProp] ? -1 : 1 })
+                } else {
+                    this.tableData.sort((a, b) => { return a[sortProp] < b[sortProp] ? -1 : 1 })
                 }
-                this.tableData.sort((a,b) => {return a.LEVEL_2_NAME > b.LEVEL_2_NAME ? 1 : -1})
-            },
-            sortByProgram() {
-                console.log("sortByProgram")
-                this.tableData = []
-                for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
-                    this.enrollmentData[String(i)].forEach((obj) => {
-                        let foundMatch = false
-                        this.tableData.forEach((tableObj) => {
-                            if (tableObj.MAJOR_DESC === obj.MAJOR_DESC) {
-                                tableObj.NUMBER_ENROLLED = String(Number(tableObj.NUMBER_ENROLLED) + Number(obj.NUMBER_ENROLLED))
-                                foundMatch = true
-                            }
-                        })
-                        if (!foundMatch) {
-                            this.tableData.push(this.deepCopy(obj))
-                        }
-                    })
-                }
-                this.tableData.sort((a,b) => {return a.MAJOR_DESC > b.MAJOR_DESC ? 1 : -1})
-            },
-            sortByDepartment() {
-                console.log("sortByDepartment")
             },
             async loadTable() {
                 if (this.minYearSelected > this.maxYearSelected) {
@@ -216,20 +194,7 @@
                 this.loading = false
 
                 this.configureTable()
-                switch (this.sortVal) {
-                    case "college":
-                        this.sortByCollege()
-                        break
-                    case "year":
-                        this.sortByYear()
-                        break
-                    case "program":
-                        this.sortByProgram()
-                        break
-                    case "department":
-                        this.sortByDepartment()
-                        break
-                }
+                this.sortTable()
             },
             getYearOptions() {
                 const absoluteMinYear = this.getAbsoluteMinYear
