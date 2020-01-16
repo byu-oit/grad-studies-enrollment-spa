@@ -1,6 +1,6 @@
 <template>
     <section>
-        <img v-if="loading" src="../assets/images/loading.gif" height="64" alt="Loading..." class="center" style="z-index: 10;">
+        <img v-if="loading" src="../assets/images/loading.gif" height="32" alt="Loading..." class="center" style="z-index: 10;">
         <div style="text-align: center;">
             <div style="margin: 0 25% 0 25%;">
                 <div style="float: left;">
@@ -16,14 +16,15 @@
                     <div style="display: flex; margin-top: 5px;">
                         <div style="margin-right: 10px;">
                             <label for="minYear"/>
-                            <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" style="font-size: 14px;"/>
+                            <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" :style="dropdownStyle"/>
                         </div>
                         &ndash;
                         <div style="margin-left: 10px;">
                             <label for="maxYear"/>
-                            <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" style="font-size: 14px;"/>
+                            <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" :style="dropdownStyle"/>
                         </div>
                     </div>
+                    <div style="margin-top: 5px; font-size: 14px; color: red; position: absolute; margin-left: -40px;">{{dropdownError}}</div>
                 </div>
             </div>
         </div>
@@ -63,6 +64,7 @@
                 maxYearSelected: String(new Date().getFullYear()),
                 yearSelectHTML: "",
                 sortVal: "college", //OPTIONS: college, year, program, department
+                dropdownError: null,
 
                 //Table Configuration
                 tableConfig: [],
@@ -83,7 +85,18 @@
             ...mapGetters ([
                 'getEnrollmentData',
                 'getAbsoluteMinYear',
-            ])
+            ]),
+            dropdownStyle: function() {
+                let style = 'font-size: 14px; '
+                if (this.minYearSelected > this.maxYearSelected) {
+                    style += 'box-shadow: 0 0 3px red;'
+                    this.dropdownError = "The greater year must be on the right."
+                }
+                else {
+                    this.dropdownError = null
+                }
+                return style
+            }
         },
         components: {
             simTable,
@@ -99,6 +112,7 @@
                 'fetchEnrollmentByYear',
             ]),
             async getCurrentYear() {
+                this.loading = true
                 await this.fetchEnrollmentByYear(String(this.currentYear))
                 let data = this.deepCopy(this.getEnrollmentData[String(this.currentYear)])
                 data.forEach((obj) => {
@@ -114,6 +128,7 @@
                     }
                 })
                 this.tableData.sort((a,b) => {return a.LEVEL_2_NAME > b.LEVEL_2_NAME ? 1 : -1})
+                this.loading = false
             },
             async getAllYears() {
                 const absoluteMinYear = this.getAbsoluteMinYear
@@ -196,7 +211,7 @@
                 }
                 while (!this.enrollmentData) {
                     this.loading = true
-                    await this.sleep(5000)
+                    await this.sleep(1000)
                 }
                 this.loading = false
 
