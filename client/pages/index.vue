@@ -4,17 +4,20 @@
             <div style="margin: 5px 10px 0 0;">Loading years...</div>
             <img src="../assets/images/loading.gif" height="32" alt="Loading...">
         </div>
+        <div v-else style="z-index: 10; position: absolute; padding: 15px;">
+            <img src="../assets/images/checkmark.jpg" height="40" alt="">
+        </div>
         <div style="text-align: center;">
-            <div style="margin: 0 25% 0 25%;">
+            <div style="margin: 0 0 0 100px;">
                 <div style="float: left;">
                     Sort<br>
                     <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
-                        <option value="college">College</option>
                         <option value="year">Year</option>
+                        <option value="college">College</option>
                         <option value="program">Program</option>
                     </select>
                 </div>
-                <div style="float: right;">
+                <div style="float: left; margin-left: 5%;">
                     Years
                     <div style="display: flex; margin-top: 5px;">
                         <div style="margin-right: 10px;">
@@ -59,15 +62,16 @@
     export default {
         data: function () {
             return {
-                enrollmentData: null,
+                enrollmentData: {},
                 tableData: [],
                 loading: false,
                 currentYear: String(new Date().getFullYear()),
                 minYearSelected: String(new Date().getFullYear()),
                 maxYearSelected: String(new Date().getFullYear()),
                 yearSelectHTML: "",
-                sortVal: "college", //OPTIONS: college, year, program, department
+                sortVal: "year", //OPTIONS: college, year, program, department
                 dropdownError: null,
+                absoluteMinYear: '2004',
 
                 //Table Configuration
                 tableConfig: [],
@@ -87,7 +91,6 @@
         computed: {
             ...mapGetters ([
                 'getEnrollmentData',
-                'getAbsoluteMinYear',
             ]),
             dropdownStyle: function() {
                 let style = 'font-size: 14px; '
@@ -105,48 +108,22 @@
             simTable,
         },
         async mounted() {
-            this.getAllYears()
+            this.fetchData()
             this.getYearOptions()
-            this.configureTable()
-            await this.getCurrentYear()
+            this.loadTable()
         },
         methods: {
             ...mapActions ([
                 'fetchEnrollmentByYear',
             ]),
-            async getCurrentYear() {
-                this.loading = true
-                await this.fetchEnrollmentByYear(String(this.currentYear))
-                let data = this.deepCopy(this.getEnrollmentData[String(this.currentYear)])
-                data.forEach((obj) => {
-                    let foundMatch = false
-                    this.tableData.forEach((tableObj) => {
-                        if (tableObj.LEVEL_2_NAME === obj.LEVEL_2_NAME) {
-                            tableObj.NUMBER_ENROLLED = String(Number(tableObj.NUMBER_ENROLLED) + Number(obj.NUMBER_ENROLLED))
-                            foundMatch = true
-                        }
+            async fetchData() {
+                for (let i = Number(this.currentYear); i >= Number(this.absoluteMinYear); i--) {
+                    await this.fetchEnrollmentByYear(String(i))
+                    this.enrollmentData[String(i)] = this.getEnrollmentData[String(i)]
+                    this.enrollmentData[String(i)].forEach((obj) => {
+                        obj.YEAR = String(i)
                     })
-                    if (!foundMatch) {
-                        this.tableData.push(obj)
-                    }
-                })
-                this.tableData.sort((a,b) => {return a.LEVEL_2_NAME > b.LEVEL_2_NAME ? 1 : -1})
-                this.loading = false
-            },
-            async getAllYears() {
-                const absoluteMinYear = this.getAbsoluteMinYear
-                let params = ""
-                for (let i = Number(this.currentYear); i >= Number(absoluteMinYear); i--) {
-                    params += String(i) + "/"
                 }
-                await this.fetchEnrollmentByYear(params)
-                this.enrollmentData = this.deepCopy(this.getEnrollmentData)
-                const keys = Object.keys(this.enrollmentData)
-                keys.forEach((key) => {
-                    this.enrollmentData[key].forEach((obj) => {
-                        obj.YEAR = key
-                    })
-                })
             },
             sortTable() {
                 let sortProp = null
@@ -187,18 +164,27 @@
                 if (this.minYearSelected > this.maxYearSelected) {
                     return
                 }
-                while (!this.enrollmentData) {
-                    this.loading = true
-                    await this.sleep(1000)
+
+                this.loading = true
+                while (this.loading) {
+                    let dataAvailable = true
+                    for (let i = Number(this.maxYearSelected); i >= Number(this.minYearSelected); i--) {
+                        if (!this.enrollmentData[String(i)]) {
+                            dataAvailable = false
+                        }
+                    }
+                    if (dataAvailable) {
+                        this.loading = false
+                    } else {
+                        await this.sleep(1000)
+                    }
                 }
-                this.loading = false
 
                 this.configureTable()
                 this.sortTable()
             },
             getYearOptions() {
-                const absoluteMinYear = this.getAbsoluteMinYear
-                for (let i = Number(this.currentYear); i >= Number(absoluteMinYear); i--) {
+                for (let i = Number(this.currentYear); i >= Number(this.absoluteMinYear); i--) {
                     this.yearSelectHTML += `<option value="${i}">${i}</option>`
                 }
             },
