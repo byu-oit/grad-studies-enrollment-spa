@@ -202,91 +202,45 @@
                     this.yearSelectHTML += `<option value="${i}">${i}</option>`
                 }
             },
-            sumNumberEnrolled(objArray) {
-                let sum = 0
-                objArray.forEach((obj) => {
-                    sum += Number(obj.NUMBER_ENROLLED)
-                })
-                return sum
-            },
             configureTable() {
-                if (this.sortVal === "college") {
-                    this.tableConfig = [
-                        {
-                            prop: "LEVEL_2_NAME",
-                            name: "College",
-                            searchable: true,
-                            sortable: true,
-                            width: 20
-                        },
-                        {
-                            prop: "NUMBER_ENROLLED",
-                            name: `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`,
-                            searchable: true,
-                            sortable: true,
-                            isHidden: false,
-                            alignItems: 'center',
-                            width: 10
-                        },
-                    ]
-                } else if (this.sortVal === "year"){
-                    this.tableConfig = [
-                        {
-                            prop: "YEAR",
-                            name: "Year",
-                            searchable: true,
-                            sortable: true,
-                            width: 20
-                        },
-                        {
-                            prop: "NUMBER_ENROLLED",
-                            name: "Total Enrolled at BYU",
-                            searchable: true,
-                            sortable: true,
-                            isHidden: false,
-                            alignItems: 'center',
-                            width: 10
-                        },
-                    ]
-                } else if (this.sortVal === "program") {
-                    this.tableConfig = [
-                        {
-                            prop: "MAJOR_DESC",
-                            name: "Program",
-                            searchable: true,
-                            sortable: true,
-                            width: 20
-                        },
-                        {
-                            prop: "NUMBER_ENROLLED",
-                            name: `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`,
-                            searchable: true,
-                            sortable: true,
-                            isHidden: false,
-                            alignItems: 'center',
-                            width: 10
-                        },
-                    ]
-                } else if (this.sortVal === "department") {
-                    this.tableConfig = [
-                        {
-                            prop: "MAJOR_DESC",
-                            name: "Program",
-                            searchable: true,
-                            sortable: true,
-                            width: 20
-                        },
-                        {
-                            prop: "NUMBER_ENROLLED",
-                            name: "Total Enrolled at BYU",
-                            searchable: true,
-                            sortable: true,
-                            isHidden: false,
-                            alignItems: 'center',
-                            width: 10
-                        },
-                    ]
+                let sortProp = null
+                let column1Header = null
+                let column2Header = null
+                switch(this.sortVal) {
+                    case 'year':
+                        sortProp = 'YEAR'
+                        column1Header = 'Year'
+                        column2Header = 'Total Enrolled at BYU'
+                        break
+                    case 'college':
+                        sortProp = 'LEVEL_2_NAME'
+                        column1Header = 'College'
+                        column2Header = `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`
+                        break
+                    case 'program':
+                        sortProp = "MAJOR_DESC"
+                        column1Header = 'Program'
+                        column2Header = `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`
+                        break
                 }
+                this.tableConfig = [
+                    {
+                        prop: sortProp,
+                        name: column1Header,
+                        searchable: true,
+                        sortable: true,
+                        width: 15
+                    },
+                    {
+                        prop: "NUMBER_ENROLLED",
+                        name: column2Header,
+                        searchable: true,
+                        sortable: true,
+                        isHidden: false,
+                        alignItems: 'center',
+                        width: 10
+                    },
+                ]
             },
             sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
