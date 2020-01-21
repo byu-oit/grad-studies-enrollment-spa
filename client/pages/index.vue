@@ -1,62 +1,65 @@
 <template>
     <section>
-        <div v-if="loading" style="z-index: 10; position: absolute; padding: 15px; background-color: #ededed; border-radius: 15px; display: flex;">
-            <div style="margin: 5px 10px 0 0;">Loading years...</div>
-            <img src="../assets/images/loading.gif" height="32" alt="Loading...">
-        </div>
-        <div v-else style="z-index: 10; position: absolute; padding: 15px;">
-            <img src="../assets/images/checkmark.jpg" height="40" alt="">
-        </div>
-        <div style="text-align: center;">
-            <div style="margin: 0 0 0 100px;">
-                <div style="float: left;">
-                    Sort<br>
-                    <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
-                        <option value="year">Year</option>
-                        <option value="college">College</option>
-                        <option value="program">Program</option>
-                    </select>
-                </div>
-                <div style="float: left; margin-left: 5%;">
-                    Years
-                    <div style="display: flex; margin-top: 5px;">
-                        <div style="margin-right: 10px;">
-                            <label for="minYear"/>
-                            <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" :style="dropdownStyle"/>
-                        </div>
-                        &ndash;
-                        <div style="margin-left: 10px;">
-                            <label for="maxYear"/>
-                            <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" :style="dropdownStyle"/>
-                        </div>
+        <div v-if="authenticated">
+            <div v-if="loading" style="z-index: 10; position: absolute; padding: 15px; background-color: #ededed; border-radius: 15px; display: flex;">
+                <div style="margin: 5px 10px 0 0;">Loading years...</div>
+                <img src="../assets/images/loading.gif" height="32" alt="Loading...">
+            </div>
+            <div style="text-align: center;">
+                <div style="margin: 0 0 0 100px;">
+                    <div style="float: left;">
+                        Sort<br>
+                        <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
+                            <option value="year">Year</option>
+                            <option value="college">College</option>
+                            <option value="program">Program</option>
+                            <option value="department">Department</option>
+                        </select>
                     </div>
-                    <div style="margin-top: 5px; font-size: 14px; color: red; position: absolute; margin-left: -40px;">{{dropdownError}}</div>
+                    <div style="float: left; margin-left: 5%;">
+                        Years
+                        <div style="display: flex; margin-top: 5px;">
+                            <div style="margin-right: 10px;">
+                                <label for="minYear"/>
+                                <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" :style="dropdownStyle"/>
+                            </div>
+                            &ndash;
+                            <div style="margin-left: 10px;">
+                                <label for="maxYear"/>
+                                <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" :style="dropdownStyle"/>
+                            </div>
+                        </div>
+                        <div style="margin-top: 5px; font-size: 14px; color: red; position: absolute; margin-left: -40px;">{{dropdownError}}</div>
+                    </div>
                 </div>
             </div>
+            <br>
+            <div style="box-shadow: 1px 1px 3px 1px #b7b7b7; margin-top: 60px;">
+                <sim-table
+                        :config="tableConfig"
+                        :data="tableData"
+                        :height="tableAttribute.height"
+                        :itemHeight="tableAttribute.itemHeight"
+                        :minWidth="tableAttribute.minWidth"
+                        :selectable="tableAttribute.selectable"
+                        :enableExport="tableAttribute.enableExport"
+                        :bordered="tableAttribute.bordered"
+                        :hoverHighlight="tableAttribute.hoverHighlight"
+                        :language="tableAttribute.language"
+                        :sortParam="tableAttribute.sortParam"
+                        font-size="18px"
+                >
+                </sim-table>
+            </div>
         </div>
-        <br>
-        <div style="box-shadow: 1px 1px 3px 1px #b7b7b7; margin-top: 60px;">
-            <sim-table
-                       :config="tableConfig"
-                       :data="tableData"
-                       :height="tableAttribute.height"
-                       :itemHeight="tableAttribute.itemHeight"
-                       :minWidth="tableAttribute.minWidth"
-                       :selectable="tableAttribute.selectable"
-                       :enableExport="tableAttribute.enableExport"
-                       :bordered="tableAttribute.bordered"
-                       :hoverHighlight="tableAttribute.hoverHighlight"
-                       :language="tableAttribute.language"
-                       :sortParam="tableAttribute.sortParam"
-                       font-size="18px"
-            >
-            </sim-table>
+        <div v-else>
+            <h1>You must sign in to view this page</h1>
         </div>
     </section>
 </template>
 
 <script>
-    import {mapActions, mapGetters} from 'vuex'
+    import {mapActions, mapGetters, mapMutations} from 'vuex'
     import simTable from '../components/sim-table/SimTable'
 
     export default {
@@ -80,17 +83,19 @@
                     itemHeight: 30,
                     minWidth: 40,
                     selectable: true,
-                    enableExport: false,
+                    enableExport: true,
                     bordered: true,
                     hoverHighlight: true,
                     language: "en",
-                    sortParam: { col: "sortName", direction: "asc" }
+                    sortParam: { col: "sortName", direction: "asc" },
                 },
             }
         },
         computed: {
             ...mapGetters ([
                 'getEnrollmentData',
+                'getLoading',
+                'getAuthenticated',
             ]),
             dropdownStyle: function() {
                 let style = 'font-size: 14px; '
@@ -102,18 +107,23 @@
                     this.dropdownError = null
                 }
                 return style
-            }
+            },
+            authenticated: function() {
+                return this.getAuthenticated;
+            },
         },
         components: {
             simTable,
         },
-        async mounted() {
-            this.fetchData()
-            this.getYearOptions()
-            this.loadTable()
+        mounted() {
+            if (this.authenticated) {
+                this.fetchData()
+                this.getYearOptions()
+                this.loadTable()
+            }
         },
         methods: {
-            ...mapActions ([
+            ...mapActions([
                 'fetchEnrollmentByYear',
             ]),
             async fetchData() {
@@ -137,11 +147,17 @@
                     case 'program':
                         sortProp = "MAJOR_DESC"
                         break
+                    case 'department':
+                        sortProp = "LEVEL_3_NAME"
+                        break
                 }
 
                 this.tableData = []
                 for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
                     this.enrollmentData[String(i)].forEach((obj) => {
+                        if (obj[sortProp] === null) {
+                            obj[sortProp] = "[Other]"
+                        }
                         let foundMatch = false
                         this.tableData.forEach((tableObj) => {
                             if (tableObj[sortProp] === obj[sortProp]) {
@@ -154,6 +170,8 @@
                         }
                     })
                 }
+
+                // Sort years backwards and everything else in alphabetical order
                 if (sortProp === 'YEAR') {
                     this.tableData.sort((a,b) => { return a[sortProp] > b[sortProp] ? -1 : 1 })
                 } else {
@@ -208,6 +226,10 @@
                         column1Header = 'Program'
                         column2Header = `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`
                         break
+                    case 'department':
+                        sortProp = "LEVEL_3_NAME"
+                        column1Header = "Department"
+                        column2Header = `Total Enrolled ${this.minYearSelected}-${this.maxYearSelected}`
                 }
                 this.tableConfig = [
                     {
@@ -215,6 +237,8 @@
                         name: column1Header,
                         searchable: true,
                         sortable: true,
+                        showSummary: true,
+                        summary: "COUNT",
                         width: 15
                     },
                     {
@@ -223,6 +247,8 @@
                         searchable: true,
                         sortable: true,
                         isHidden: false,
+                        showSummary: true,
+                        summary: "SUM",
                         alignItems: 'center',
                         width: 10
                     },

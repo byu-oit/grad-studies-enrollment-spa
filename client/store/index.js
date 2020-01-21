@@ -25,6 +25,7 @@ export const state = () => ({
     rowSelected: {},
     hasMessage: false,
     reloadKey: 0,
+    authenticated: true,
 });
 
 // export getters object
@@ -34,37 +35,28 @@ export const getters = {
     },
     getLoading: state => {
         return state.loading
+    },
+    getHasMessage: state => {
+        return state.hasMessage
+    },
+    getAuthenticated: state => {
+        return state.authenticated
     }
 }
 
 // export mutations object
 export const mutations = {
-    setCurrentStudentList(state, arr) {
-        state.currentStudentList = arr
-        state.currentStudentList.sort(function(a, b){ return a.sortName > b.sortName}) //sort by name
-    },
-    setETDStudentList(state, arr) {
-        state.ETDStudentList = arr
-        state.ETDStudentList.sort(function(a, b){ return a.sortName > b.sortName}) //sort by name
-    },
-    setNewlyAdmittedStudentList(state, arr) {
-        state.newlyAdmittedStudentList = arr
-        state.newlyAdmittedStudentList.sort(function(a, b){ return a.sortName > b.sortName}) //sort by name
-    },
     setLoading(state, bool) {
         state.loading = bool
-    },
-    setRowSelected(state, obj) {
-        state.rowSelected = obj
     },
     setHasMessage(state, val) {
         state.hasMessage = val
     },
-    setReloadKey(state) {
-        state.reloadKey = state.reloadKey + 1
-    },
     setEnrollmentData(state, obj) {
         state.enrollmentData = obj;
+    },
+    setAuthenticated(state, bool) {
+        state.authenticated = bool;
     }
 };
 
@@ -79,46 +71,13 @@ export const actions = {
         commit('wabs/authUpdate', wabs.auth);
         commit('wabs/userUpdate', wabs.user);
     },
-
-    // fetchEnrollmentByYear(context, year) {
-    //     context.commit('setLoading', true)
-    //     const request = {
-    //         method: "GET",
-    //         url: `https://api.byu.edu/graduateStudiesYAPI/v1.0/student/enrollments/year/${year}`
-    //     }
-    //     return new Promise((resolve, reject) => {
-    //         if (!this.app.$byu.user) {
-    //             context.commit('setLoading', false)
-    //         }
-    //         this.app.$byu.auth.request(request, (body, status) => {
-    //             context.commit('setLoading', false)
-    //             if (status >= 400) {
-    //                 if (status === 401) {
-    //                     if (process.client) {
-    //                         window.location.reload()
-    //                     }
-    //                 }
-    //                 context.commit('setHasMessage', 'An error occured getting student list.')
-    //                 console.error(`${status} - ${body}`)
-    //                 resolve(false)
-    //             }
-    //             else {
-    //                 context.commit('setEnrollmentData', JSON.parse(body).content)
-    //                 resolve(true)
-    //             }
-    //         })
-    //     })
-    // },
-
-    //Simplified version
     fetchEnrollmentByYear(context, year) {
-        context.commit('setLoading', true)
         const options = {
             method: "GET",
             url: `https://api.byu.edu/graduateStudiesYAPI/v1.0/student/enrollments/year/${year}`
         }
         if (!this.app.$byu.user) {
-            context.commit('setLoading', false)
+            context.commit('setAuthenticated', false)
         }
         return this.app.$byu.auth.request(options)
             .then(result => {
@@ -128,13 +87,10 @@ export const actions = {
                             window.location.reload()
                         }
                     }
-                    context.commit('setHasMessage', 'An error occured getting student list.')
                     console.error(`${status} - ${result}`)
-                }
-                else {
+                } else {
                     let data = JSON.parse(result.body)
                     context.commit('setEnrollmentData', data.content)
-                    context.commit('setLoading', false)
                 }
             })
     },
