@@ -16,7 +16,7 @@ pipelines:
       - type: handel
         name: Deploy
         environments_to_deploy:
-          - dev
+        - dev
   prd:
     phases:
       - type: github
@@ -30,4 +30,4 @@ pipelines:
       - type: handel
         name: PrdDeploy
         environments_to_deploy:
-          - prd
+        - prd
