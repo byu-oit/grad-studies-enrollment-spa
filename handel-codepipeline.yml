@@ -11,10 +11,10 @@ pipelines:
         repo: grad-studies-enrollment-spa
         branch: master
       - type: codebuild
-        name: CodeBuild
-        build_image: aws/codebuild/docker:18.09.0
+        name: Build
+        build_image: aws/codebuild/standard:2.0
       - type: handel
-        name: DevDeploy
+        name: Deploy
         environments_to_deploy:
           - dev
   prd:
