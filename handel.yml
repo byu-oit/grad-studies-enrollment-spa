@@ -1,13 +1,13 @@
 version: 1
 
-name: grad-studies-enrollment-spa
+name: grad-studies-enrollment
 
 tags:
   team: AIM
   env: Production
   data-sensitivity: highly confidential
-  Name: grad-studies-enrollment-spa
-  app: grad-studies-enrollment-spa
+  Name: grad-studies-enrollment
+  app: grad-studies-enrollment
 
 environments:
   stage:
