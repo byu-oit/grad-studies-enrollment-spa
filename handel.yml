@@ -3,43 +3,61 @@ version: 1
 name: grad-studies-enrollment-spa
 
 tags:
-  team: Aim
+  team: AIM
+  env: Production
   data-sensitivity: confidential
+  Name: grad-studies-enrollment-spa
+  app: grad-studies-enrollment-spa
 
 environments:
   dev:
     webapp:
-      type: beanstalk
-      path_to_code: .
-      solution_stack: 64bit Amazon Linux 2018.03 v4.10.2 running Node.js
-      health_check_url: /healthcheck
-      routing:
-        type: https
-        https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
-        dns_names:
-          - graduate-enrollment-dev.sim.byu.edu
+      type: ecs-fargate
+      max_mb: 2048
+      cpu_units: 1024
       auto_scaling:
-        min_instances: 2
-        max_instances: 3
-      instance_type: m5.large
-      environment_variables:
-        PORT: 8081
-        NODE_ENV: development
+        min_tasks: 1
+        max_tasks: 2
+      load_balancer:
+        type: https
+        https_certificate: 5bc4a9e6-6a85-490f-8b92-c7e3168904e1
+        dns_names:
+          - gradstudiesenrollment.sim-dev.byu.edu
+        health_check_grace_period: 30
+      containers:
+        - name: webapp
+          image_name: "<account>/grad-studies-enrollment-spa-webapp:dev"
+          port_mappings:
+            - 8460
+          routing:
+            base_path: /
+            health_check_path: /healthcheck
+          environment_variables:
+            DEBUG: wabs*
+            NODE_ENV: development
   prd:
     webapp:
-      type: beanstalk
-      path_to_code: .
-      solution_stack: 64bit Amazon Linux 2018.03 v4.5.4 running Node.js
-      health_check_url: /healthcheck
-      routing:
+      type: ecs-fargate
+      max_mb: 1024
+      cpu_units: 256
+      auto_scaling:
+        min_tasks: 1
+        max_tasks: 2
+      load_balancer:
         type: https
         https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
         dns_names:
-          - graduate-enrollment.sim.byu.edu
-      auto_scaling:
-        min_instances: 2
-        max_instances: 3
-      instance_type: t2.small
-      environment_variables:
-        PORT: 8081
-        NODE_ENV: production
+          - gradstudiesenrollment.sim.byu.edu
+        health_check_grace_period: 30
+      containers:
+        - name: webapp
+          image_name: "<account>/grad-studies-enrollment-spa-webapp:prd"
+          port_mappings:
+            - 8460
+          routing:
+            base_path: /
+            health_check_path: /healthcheck
+          environment_variables:
+            DEBUG: wabs*
+            NODE_ENV: production
+

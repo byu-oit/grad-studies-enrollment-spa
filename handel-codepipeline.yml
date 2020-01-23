@@ -1,42 +1,33 @@
 version: 1
 
-#name: grad-studies-enrollment-spa
 name: grad-studies-enrollment-spa
 
 pipelines:
   dev:
     phases:
-    - type: github
-      name: GitHub
-      owner: byu-oit
-      repo: grad-studies-enrollment-spa
-      branch: master
-    - type: codebuild
-      name: CodeBuild
-      build_image: aws/codebuild/standard:2.0
-    - type: handel
-      name: DevDeploy
-      environments_to_deploy:
-      - dev
-#    - type: slack_notify
-#      name: Notify
-#      channel: '#'
-#      message: 'Finished deploying grad-mailer to dev'
+      - type: github
+        name: GitHub
+        owner: byu-oit
+        repo: grad-studies-enrollment-spa
+        branch: master
+      - type: codebuild
+        name: CodeBuild
+        build_image: aws/codebuild/docker:18.09.0
+      - type: handel
+        name: DevDeploy
+        environments_to_deploy:
+          - dev
   prd:
     phases:
-    - type: github
-      name: GitHub
-      owner: byu-oit
-      repo: grad-studies-enrollment-spa
-      branch: release
-    - type: codebuild
-      name: CodeBuild
-      build_image: aws/codebuild/standard:2.0
-    - type: handel
-      name: PrdDeploy
-      environments_to_deploy:
-      - prd
-#    - type: slack_notify
-#      name: Notify
-#      channel: '#'
-#      message: 'Finished deploying grad-mailer to prd'
+      - type: github
+        name: GitHub
+        owner: byu-oit
+        repo: grad-studies-enrollment-spa
+        branch: release
+      - type: codebuild
+        name: CodeBuild
+        build_image: aws/codebuild/docker:18.09.0
+      - type: handel
+        name: PrdDeploy
+        environments_to_deploy:
+          - prd
