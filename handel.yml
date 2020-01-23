@@ -3,7 +3,7 @@ version: 1
 name: grad-studies-enrollment-spa
 
 tags:
-  team: Aim APIs
+  team: Aim
   data-sensitivity: confidential
 
 environments:
