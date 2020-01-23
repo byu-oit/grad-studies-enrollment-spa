@@ -15,7 +15,7 @@ RUN npm install
 # Bundle app source
 COPY client ./client
 COPY server ./server
-COPY config.js nuxt.config.js ./
+COPY config.js nuxt.config.js WebResource.js ./
 
 # Build the application
 RUN npm run build
