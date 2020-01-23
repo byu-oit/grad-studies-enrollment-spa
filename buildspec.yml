@@ -1,17 +1,23 @@
 version: 0.2
 
 phases:
-  pre_build:
-    commands:
-      - echo Installing npm dependencies
-      - npm install
-      - npm run build
   install:
     runtime-versions:
-      nodejs: 10
+      docker: 18
+    commands:
+      - docker --version
+      - chmod u+x ecr/*.sh
+      - DOCKER_REPO_NAME=grad-studies-enrollment-spa-webapp
+      - DOCKER_IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$DOCKER_REPO_NAME:$HANDEL_PIPELINE_NAME
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+      - ecr/create-repo-if-missing.sh $DOCKER_REPO_NAME ecr/access-policy.json ecr/lifecycle-policy.json
   build:
     commands:
       - echo Running unit tests for components
+      - docker build . -t $DOCKER_IMAGE_NAME
+      - docker push $DOCKER_IMAGE_NAME
 artifacts:
   files:
-    - ./**/*
+    - handel.yml

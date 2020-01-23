@@ -20,7 +20,7 @@ COPY config.js nuxt.config.js ./
 # Build the application
 RUN npm run build
 
-EXPOSE 8080
+EXPOSE 8460
 
 # Development mode
 CMD [ "npm", "run", "dev" ]

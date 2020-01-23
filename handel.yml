@@ -10,7 +10,7 @@ tags:
   app: grad-studies-enrollment
 
 environments:
-  stage:
+  dev:
     webapp:
       type: ecs-fargate
       max_mb: 2048
@@ -34,7 +34,7 @@ environments:
             health_check_path: /healthcheck
           environment_variables:
             DEBUG: wabs*
-            NODE_ENV: stage
+            NODE_ENV: dev
   prod:
     webapp:
       type: ecs-fargate

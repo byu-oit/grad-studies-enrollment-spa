@@ -3,7 +3,7 @@ version: 1
 name: grad-studies-enrollment
 
 pipelines:
-  stage:
+  dev:
     phases:
     - type: github
       name: GitHub
@@ -12,11 +12,11 @@ pipelines:
       branch: master
     - type: codebuild
       name: CodeBuild
-      build_image: aws/codebuild/docker:18.09.0
+      build_image: aws/codebuild/standard:3.0
     - type: handel
       name: StageDeploy
       environments_to_deploy:
-      - stage
+      - dev
   prod:
     phases:
     - type: github
@@ -26,7 +26,7 @@ pipelines:
       branch: release
     - type: codebuild
       name: CodeBuild
-      build_image: aws/codebuild/docker:18.09.0
+      build_image: aws/codebuild/standard:3.0
     - type: handel
       name: ProdDeploy
       environments_to_deploy:
