@@ -5,12 +5,12 @@ name: grad-studies-enrollment-spa
 tags:
   team: AIM
   env: Production
-  data-sensitivity: confidential
+  data-sensitivity: highly confidential
   Name: grad-studies-enrollment-spa
   app: grad-studies-enrollment-spa
 
 environments:
-  dev:
+  stage:
     webapp:
       type: ecs-fargate
       max_mb: 2048
@@ -26,7 +26,7 @@ environments:
         health_check_grace_period: 30
       containers:
         - name: webapp
-          image_name: "<account>/grad-studies-enrollment-spa-webapp:dev"
+          image_name: "<account>/grad-studies-enrollment-spa-webapp:stage"
           port_mappings:
             - 8460
           routing:
@@ -34,8 +34,8 @@ environments:
             health_check_path: /healthcheck
           environment_variables:
             DEBUG: wabs*
-            NODE_ENV: development
-  prd:
+            NODE_ENV: stage
+  prod:
     webapp:
       type: ecs-fargate
       max_mb: 1024
@@ -51,7 +51,7 @@ environments:
         health_check_grace_period: 30
       containers:
         - name: webapp
-          image_name: "<account>/grad-studies-enrollment-spa-webapp:prd"
+          image_name: "<account>/grad-studies-enrollment-spa-webapp:prod"
           port_mappings:
             - 8460
           routing:

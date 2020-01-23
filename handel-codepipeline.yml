@@ -3,31 +3,31 @@ version: 1
 name: grad-studies-enrollment-spa
 
 pipelines:
-  dev:
+  stage:
     phases:
-      - type: github
-        name: GitHub
-        owner: byu-oit
-        repo: grad-studies-enrollment-spa
-        branch: master
-      - type: codebuild
-        name: Build
-        build_image: aws/codebuild/standard:2.0
-      - type: handel
-        name: Deploy
-        environments_to_deploy:
-        - dev
-  prd:
+    - type: github
+      name: GitHub
+      owner: byu-oit
+      repo: grad-studies-enrollment-spa
+      branch: master
+    - type: codebuild
+      name: CodeBuild
+      build_image: aws/codebuild/docker:18.09.0
+    - type: handel
+      name: StageDeploy
+      environments_to_deploy:
+      - stage
+  prod:
     phases:
-      - type: github
-        name: GitHub
-        owner: byu-oit
-        repo: grad-studies-enrollment-spa
-        branch: release
-      - type: codebuild
-        name: CodeBuild
-        build_image: aws/codebuild/docker:18.09.0
-      - type: handel
-        name: PrdDeploy
-        environments_to_deploy:
-        - prd
+    - type: github
+      name: GitHub
+      owner: byu-oit
+      repo: grad-studies-enrollment-spa
+      branch: release
+    - type: codebuild
+      name: CodeBuild
+      build_image: aws/codebuild/docker:18.09.0
+    - type: handel
+      name: ProdDeploy
+      environments_to_deploy:
+      - prod
