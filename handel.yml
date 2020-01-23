@@ -26,7 +26,7 @@ environments:
         health_check_grace_period: 30
       containers:
         - name: webapp
-          image_name: "<account>/grad-studies-enrollment-spa-webapp:stage"
+          image_name: "<account>/grad-studies-enrollment-spa-webapp:dev"
           port_mappings:
             - 8460
           routing:
