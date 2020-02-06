@@ -1,0 +1,47 @@
+version: 1
+
+name: grad-studies-enrollment-spa
+
+tags:
+  team: AIM
+  data-sensitivity: highly confidential
+
+environments:
+  prod:
+    webapp:
+      type: ecs-fargate
+      max_mb: 1024
+      cpu_units: 256
+      auto_scaling:
+        min_tasks: 1
+        max_tasks: 2
+      load_balancer:
+        type: https
+        https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
+        dns_names:
+          - gradstudiesenrollment.sim.byu.edu
+        health_check_grace_period: 30
+      containers:
+        - name: webapp
+          image_name: "<account>/grad-studies-enrollment-spa-webapp:prod"
+          port_mappings:
+            - 8460
+          routing:
+            base_path: /
+            health_check_path: /healthcheck
+          environment_variables:
+            DEBUG: wabs*
+
+
+            version: 1
+
+            name: grad-studies-enrollment-spa
+
+            tags:
+              team: AIM
+              env: Stage
+              data-sensitivity: highly confidential
+              Name: grad-studies-enrollment-spa
+              app: grad-studies-enrollment-spa
+
+

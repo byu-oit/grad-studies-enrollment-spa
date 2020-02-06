@@ -69,9 +69,42 @@ html, body, #__nuxt, #__layout {
   }
 }
 
-.center {
-  position: absolute;
-  display: block;
-  margin-left: 50%;
-  margin-right: auto;
-}
+  .center {
+    position: absolute;
+    display: block;
+    margin-left: 50%;
+    margin-right: auto;
+  }
+
+  .col {
+    margin: 0 60px 0 60px
+  }
+
+  .dropdownSection {
+    display: flex;
+  }
+
+  .loadingBlock {
+    z-index: 10;
+    position: absolute;
+    padding: 15px;
+    background-color: #ededed;
+    border-radius: 15px;
+    display: flex;
+  }
+
+  @media (max-width: 576px) {
+    .dropdownSection {
+      display: inline-block;
+    }
+
+    .col {
+      padding-bottom: 30px;
+      padding-top: 20px;
+    }
+
+    .loadingBlock {
+      margin-top: 50%;
+      width: 100%
+    }
+  }

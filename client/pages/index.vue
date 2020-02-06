@@ -1,40 +1,42 @@
 <template>
     <section>
         <div v-if="authenticated">
-            <div v-if="loading" style="z-index: 10; position: absolute; padding: 15px; background-color: #ededed; border-radius: 15px; display: flex;">
+            <div v-if="loading" class="loadingBlock">
                 <div style="margin: 5px 10px 0 0;">Loading years...</div>
                 <img src="../assets/images/loading.gif" height="32" alt="Loading...">
             </div>
             <div style="text-align: center;">
-                <div style="margin: 0 0 0 100px;">
-                    <div style="float: left;">
-                        Sort<br>
-                        <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
-                            <option value="year">Year</option>
-                            <option value="college">College</option>
-                            <option value="program">Program</option>
-                            <option value="department">Department</option>
-                        </select>
-                    </div>
-                    <div style="float: left; margin-left: 5%;">
-                        Years
-                        <div style="display: flex; margin-top: 5px;">
-                            <div style="margin-right: 10px;">
-                                <label for="minYear"/>
-                                <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" :style="dropdownStyle"/>
-                            </div>
-                            &ndash;
-                            <div style="margin-left: 10px;">
-                                <label for="maxYear"/>
-                                <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" :style="dropdownStyle"/>
-                            </div>
+                <div style="display: inline-block;">
+                    <div class="dropdownSection">
+                        <div class="col">
+                            Sort<br>
+                            <select v-model="sortVal" @change="loadTable" id="sortVal" style="font-size: 14px; margin-top: 5px;">
+                                <option value="year">Year</option>
+                                <option value="college">College</option>
+                                <option value="program">Program</option>
+                                <option value="department">Department</option>
+                            </select>
                         </div>
-                        <div style="margin-top: 5px; font-size: 14px; color: red; position: absolute; margin-left: -40px;">{{dropdownError}}</div>
+                        <div class="col" style="display: inline-block;">
+                            Years
+                            <div style="display: flex; margin-top: 5px;">
+                                <div style="margin-right: 10px;">
+                                    <label for="minYear"/>
+                                    <select v-html="yearSelectHTML" v-model="minYearSelected" @change="loadTable" id="minYear" :style="dropdownStyle"/>
+                                </div>
+                                &ndash;
+                                <div style="margin-left: 10px;">
+                                    <label for="maxYear"/>
+                                    <select v-html="yearSelectHTML" v-model="maxYearSelected" @change="loadTable" id="maxYear" :style="dropdownStyle"/>
+                                </div>
+                            </div>
+                            <div style="margin-top: 5px; font-size: 14px; color: red; position: absolute; margin-left: -40px;">{{dropdownError}}</div>
+                        </div>
                     </div>
                 </div>
             </div>
             <br>
-            <div style="box-shadow: 1px 1px 3px 1px #b7b7b7; margin-top: 60px;">
+            <div style="box-shadow: 1px 1px 3px 1px #b7b7b7;">
                 <sim-table
                         :config="tableConfig"
                         :data="tableData"
@@ -194,7 +196,7 @@
                     if (dataAvailable) {
                         this.loading = false
                     } else {
-                        await this.sleep(1000)
+                        await this.sleep(2000)
                     }
                 }
 

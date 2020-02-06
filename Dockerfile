@@ -15,15 +15,15 @@ RUN npm install
 # Bundle app source
 COPY client ./client
 COPY server ./server
-COPY config.js nuxt.config.js ./
+COPY config.js nuxt.config.js WebResource.js ./
 
 # Build the application
 RUN npm run build
 
-EXPOSE 8080
+EXPOSE 8460
 
 # Development mode
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "devMac" ]
 
 # Production mode
 # CMD [ "npm", "start" ]
