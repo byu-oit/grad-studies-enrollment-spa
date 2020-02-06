@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "dev": "node server/index",
     "devMac": "IN_DEV=true node server/index",
-    "start": "NODE_ENV=production node server/index",
+    "start": "node server/index",
     "test": "mocha test"
   },
   "keywords": [
