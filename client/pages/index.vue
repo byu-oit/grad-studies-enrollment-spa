@@ -2,7 +2,7 @@
     <section>
         <div v-if="authenticated">
             <div v-if="loading" class="loadingBlock">
-                <div style="margin: 5px 10px 0 0;">Loading years... TEST</div>
+                <div style="margin: 5px 10px 0 0;">Loading years...</div>
                 <img src="../assets/images/loading.gif" height="32" alt="Loading...">
             </div>
             <div style="text-align: center;">
@@ -158,7 +158,7 @@
                 for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
                     this.enrollmentData[String(i)].forEach((obj) => {
                         if (obj[sortProp] === null) {
-                            obj[sortProp] = "[Other]"
+                            obj[sortProp] = "LEVEL_2_NAME"
                         }
                         let foundMatch = false
                         this.tableData.forEach((tableObj) => {
