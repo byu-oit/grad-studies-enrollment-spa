@@ -158,7 +158,7 @@
                 for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
                     this.enrollmentData[String(i)].forEach((obj) => {
                         if (obj[sortProp] === null) {
-                            obj[sortProp] = obj["LEVEL_2_NAME"] + " +"
+                            obj[sortProp] = obj["LEVEL_2_NAME"]
                         }
                         let foundMatch = false
                         this.tableData.forEach((tableObj) => {
