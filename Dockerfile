@@ -23,7 +23,7 @@ RUN npm run build
 EXPOSE 8460
 
 # Development mode
-CMD [ "npm", "run", "devMac" ]
+# CMD [ "npm", "run", "devMac" ]
 
 # Production mode
-#CMD [ "npm", "start" ]
+CMD [ "npm", "start" ]
