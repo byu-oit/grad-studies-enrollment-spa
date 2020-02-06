@@ -2,7 +2,7 @@
     <section>
         <div v-if="authenticated">
             <div v-if="loading" class="loadingBlock">
-                <div style="margin: 5px 10px 0 0;">Loading years...</div>
+                <div style="margin: 5px 10px 0 0;">Loading years... TEST</div>
                 <img src="../assets/images/loading.gif" height="32" alt="Loading...">
             </div>
             <div style="text-align: center;">
