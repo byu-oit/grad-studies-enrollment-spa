@@ -20,9 +20,9 @@ environments:
         max_tasks: 2
       load_balancer:
         type: https
-        https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
+        https_certificate: c42c0b51-ab8d-40a2-bf28-c8b16a8ffa46
         dns_names:
-          - gradstudiesenrollment-dev.sim.byu.edu
+          - gradstudiesenrollment.sim-dev.byu.edu
         health_check_grace_period: 30
       containers:
         - name: webapp
