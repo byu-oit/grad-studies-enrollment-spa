@@ -61,7 +61,7 @@
 </template>
 
 <script>
-    import {mapActions, mapGetters, mapMutations} from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
     import simTable from '../components/sim-table/SimTable'
 
     export default {
@@ -158,7 +158,7 @@
                 for (let i = Number(this.minYearSelected); i <= Number(this.maxYearSelected); i++) {
                     this.enrollmentData[String(i)].forEach((obj) => {
                         if (obj[sortProp] === null) {
-                            obj[sortProp] = "[Other]"
+                            obj[sortProp] = obj["LEVEL_2_NAME"]
                         }
                         let foundMatch = false
                         this.tableData.forEach((tableObj) => {
