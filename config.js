@@ -58,7 +58,7 @@ const config = {
     // the WABS configuration: https://www.npmjs.com/package/byu-wabs#create-a-wabs-configuration
     wabs: {
         appName: pkg.name,
-        awsParameterName: process.env.IN_DEV ? "grad-studies-enrollment.LOCAL" : "grad-studies-enrollment.dev.WABS_CONFIG"
+        awsParameterName: process.env.IN_DEV ? "grad-studies-enrollment.LOCAL" : null
     }
 };
 
