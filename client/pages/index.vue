@@ -40,7 +40,7 @@
                 <sim-table
                         :config="tableConfig"
                         :data="tableData"
-                        :height="tableAttribute.height"
+                        :height="this.windowHeight - 250"
                         :itemHeight="tableAttribute.itemHeight"
                         :minWidth="tableAttribute.minWidth"
                         :selectable="tableAttribute.selectable"
@@ -81,7 +81,6 @@
                 //Table Configuration
                 tableConfig: [],
                 tableAttribute: {
-                    height: 440,
                     itemHeight: 30,
                     minWidth: 40,
                     selectable: true,
