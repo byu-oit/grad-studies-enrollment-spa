@@ -9,10 +9,11 @@
         <base-icon
           icon-name="cloudDownloadAlt"
           icon-color="#bbbbbb"
-          width="20"
-          height="20"
+          width="30"
+          height="30"
           @click.native="handleExportTable"
           class="download-icon"
+          style="margin-right: 5px;"
         ></base-icon>
       </div>
       <div class="t-header">
