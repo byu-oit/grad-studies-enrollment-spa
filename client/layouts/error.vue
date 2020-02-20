@@ -10,7 +10,7 @@
         props: ['message.vue'],
         layout: 'default',
         data() {
-            console.log(this.error);
+            console.log("Error: ", this.error);
             return {};
         }
     }

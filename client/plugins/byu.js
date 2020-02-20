@@ -18,11 +18,14 @@
 import axios from '~/plugins/axios'
 import { site } from '~~/config'
 import Vue from 'vue';
+import VueWindowSize from 'vue-window-size'
 
 // ignore any components that start with byu-
 const byuWebComponentNames = [
     /^byu-/,
 ];
+
+Vue.use(VueWindowSize)
 
 // tell vue to ignore the BYU web components
 if (!Array.isArray(Vue.config.ignoredElements)) Vue.config.ignoredElements = [];
