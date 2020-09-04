@@ -34,7 +34,7 @@
     "fecha": "^3.0.3",
     "jquery": "^3.4.1",
     "material-design-icons-iconfont": "^3.0.3",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "nuxt": "^1.4.2",
     "v-calendar": "^1.0.0-beta.20",
     "vue-dialog-loading": "^0.3.1",
