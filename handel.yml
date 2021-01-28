@@ -45,7 +45,7 @@ environments:
         max_tasks: 2
       load_balancer:
         type: https
-        https_certificate: bfd9f3aa-9757-42ea-af88-4565f49a2de6
+        https_certificate: ad9a904d-0640-450b-bf7a-f8bac87e1648
         dns_names:
           - gradstudiesenrollment.sim.byu.edu
         health_check_grace_period: 30
